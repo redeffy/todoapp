@@ -4,43 +4,43 @@ async function waitForConnection(db) {
   try {
     await db.authenticate();
   } catch (error) {
-    console.log('Could not connect, retrying in 1000 milliseconds...');
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log("Could not connect, retrying in 1000 milliseconds...");
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     await waitForConnection(db);
   }
 }
 
 function start() {
-  var db = require('../db/db');
+  var db = require("../db/db");
 
   waitForConnection(db)
-      .then(() => db.sync( { force: true } ))
-      .then(() => console.log("All models were synchronized successfully."))
-      .then(() => startServer());
+    .then(() => db.sync({ force: true }))
+    .then(() => console.log("All models were synchronized successfully."))
+    .then(() => startServer());
 }
 
 function startServer() {
   /**
    * Module dependencies.
    */
-
-  var app = require('../app');
-  var debug = require('debug')('backend:server');
-  var http = require('http');
+  console.log("Server started");
+  var app = require("../app");
+  var debug = require("debug")("backend:server");
+  var http = require("http");
 
   /**
    * Get port from environment and store in Express.
    */
 
-  var port = normalizePort(process.env.PORT || '3000');
-  app.set('port', port);
+  var port = normalizePort(process.env.PORT || "3000");
+  app.set("port", port);
 
   /**
    * Get host from environment and store in Express.
    */
 
-  var host = normalizePort(process.env.HOST || 'localhost');
-  app.set('host', host);
+  var host = normalizePort(process.env.HOST || "localhost");
+  app.set("host", host);
 
   /**
    * Create HTTP server.
@@ -53,8 +53,8 @@ function startServer() {
    */
 
   server.listen(port);
-  server.on('error', onError);
-  server.on('listening', onListening);
+  server.on("error", onError);
+  server.on("listening", onListening);
 
   /**
    * Normalize a port into a number, string, or false.
@@ -81,24 +81,20 @@ function startServer() {
    */
 
   function onError(error) {
-    if (error.syscall !== 'listen') {
+    if (error.syscall !== "listen") {
       throw error;
     }
 
-    var bind = typeof port === 'string'
-        ? 'Pipe ' + port
-        : 'Port ' + port;
+    var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
 
     // handle specific listen errors with friendly messages
     switch (error.code) {
-      case 'EACCES':
-        console.error(bind + ' requires elevated privileges');
+      case "EACCES":
+        console.error(bind + " requires elevated privileges");
         process.exit(1);
-        break;
-      case 'EADDRINUSE':
-        console.error(bind + ' is already in use');
+      case "EADDRINUSE":
+        console.error(bind + " is already in use");
         process.exit(1);
-        break;
       default:
         throw error;
     }
@@ -110,12 +106,11 @@ function startServer() {
 
   function onListening() {
     var addr = server.address();
-    var bind = typeof addr === 'string'
-        ? 'pipe ' + addr
-        : 'port ' + addr.port;
-    debug('Listening on ' + bind);
-    console.log('Listening on ' + bind);
+    var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+    debug("Listening on " + bind);
+    console.log("Listening on " + bind);
   }
 }
 
-start()
+console.log("About to start server");
+start();
