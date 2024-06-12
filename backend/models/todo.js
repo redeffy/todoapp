@@ -16,10 +16,9 @@ module.exports = (sequelize) => {
       allowNull: false,
       type: DataTypes.STRING,
     },
-    done: {
-      allowNull: false,
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+    done_date: {
+      allowNull: true,
+      type: DataTypes.DATEONLY,
     },
   });
 };

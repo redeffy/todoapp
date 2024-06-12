@@ -1,5 +1,5 @@
 const { body, validationResult } = require("express-validator");
-
+const sequelize = require("sequelize");
 const db = require("../db/db");
 
 var express = require("express");
@@ -10,6 +10,11 @@ var router = express.Router();
 router.get("/", authenticateToken, async (req, res, next) => {
   const todos = await db.models.todo.findAll({
     where: { user_id: req.userId },
+    order: [
+      // Use Sequelize's `sequelize.literal` to create a custom order condition
+      [sequelize.literal("done_date IS NULL"), "DESC"],
+      ["done_date", "DESC"],
+    ],
   });
 
   res.status(200).json(todos);
@@ -48,7 +53,7 @@ router.put("/:id/done", authenticateToken, async (req, res, next) => {
     return;
   }
 
-  todo = await todo.update({ done: true });
+  todo = await todo.update({ done_date: new Date() });
 
   res.status(200).json(todo);
 });
@@ -65,7 +70,7 @@ router.delete("/:id/done", authenticateToken, async (req, res, next) => {
     return;
   }
 
-  todo = await todo.update({ done: false });
+  todo = await todo.update({ done_date: null });
 
   res.status(200).json(todo);
 });
