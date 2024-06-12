@@ -1,13 +1,9 @@
-<script setup>
-import TodoList from "@/components/TodoList.vue";
-</script>
+<script setup></script>
 
 <template>
   <main>
-    <TodoList />
+    <RouterView />
   </main>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

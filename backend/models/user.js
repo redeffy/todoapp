@@ -1,25 +1,21 @@
 const { DataTypes } = require("sequelize");
 
 module.exports = (sequelize) => {
-  sequelize.define("todo", {
+  sequelize.define("user", {
     id: {
       allowNull: false,
       autoIncrement: true,
       primaryKey: true,
       type: DataTypes.INTEGER,
     },
-    user_id: {
-      allowNull: false,
-      type: DataTypes.INTEGER,
-    },
-    name: {
-      allowNull: false,
+    username: {
       type: DataTypes.STRING,
-    },
-    done: {
       allowNull: false,
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      unique: true,
+    },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   });
 };
