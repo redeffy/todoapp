@@ -10,11 +10,6 @@ var router = express.Router();
 router.get("/", authenticateToken, async (req, res, next) => {
   const todos = await db.models.todo.findAll({
     where: { user_id: req.userId },
-    order: [
-      // Use Sequelize's `sequelize.literal` to create a custom order condition
-      [sequelize.literal("done_date IS NULL"), "DESC"],
-      ["done_date", "DESC"],
-    ],
   });
 
   res.status(200).json(todos);
