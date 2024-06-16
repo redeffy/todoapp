@@ -43,16 +43,12 @@ export default {
   methods: {
     async getAll() {
       const todos = await readTodos();
-      posthog.onFeatureFlags(() => {
-        this.featureFlags.sortTodos =
-          posthog.isFeatureEnabled("sort-todos-by-date");
 
-        if (this.featureFlags.sortTodos) {
-          this.sortTodos(todos);
-        } else {
-          this.todos = todos;
-        }
-      });
+      if (this.featureFlags.sortTodos) {
+        this.sortTodos(todos);
+      } else {
+        this.todos = todos;
+      }
     },
     sortTodos(todos) {
       const uniqueDates = [];
@@ -74,7 +70,11 @@ export default {
     },
     async post(name) {
       var todo = await createTodo(name);
-      this.todos.push(todo);
+      if (this.featureFlags.sortTodos) {
+        this.todos["null"].push(todo);
+      } else {
+        this.todos.push(todo);
+      }
     },
     async done(id) {
       var todo = await doneTodo(id);
@@ -85,15 +85,29 @@ export default {
       this.update(id, todo);
     },
     update(id, todo) {
-      this.todos.forEach((value, i) => {
-        if (value.id === id) {
-          this.todos[i] = todo;
-        }
-      });
+      if (this.featureFlags.sortTodos) {
+        Object.values(this.todos).forEach((todoList) => {
+          todoList.forEach((value, i) => {
+            if (value.id === id) {
+              todoList[i] = todo;
+            }
+          });
+        });
+      } else {
+        this.todos.forEach((value, i) => {
+          if (value.id === id) {
+            this.todos[i] = todo;
+          }
+        });
+      }
     },
   },
   created() {
-    this.getAll();
+    posthog.onFeatureFlags(() => {
+      this.featureFlags.sortTodos =
+        posthog.isFeatureEnabled("sort-todos-by-date");
+      this.getAll();
+    });
   },
 };
 </script>
