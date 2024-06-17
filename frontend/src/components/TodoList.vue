@@ -6,12 +6,11 @@
 
     <li
       v-if="featureFlags.sortTodos"
-      v-for="(currentTodos, date) in todos"
-      :key="date"
+      v-for="date in Object.keys(todos).sort().reverse()"
     >
       <h3>{{ date == "null" ? "Tomorrow" : date }}</h3>
       <ul>
-        <li v-for="(todo, i) in currentTodos">
+        <li v-for="(todo, i) in todos[date]">
           <Todo :todo="todo" @done="done" @undone="undone" />
         </li>
       </ul>
