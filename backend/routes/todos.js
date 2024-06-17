@@ -1,5 +1,4 @@
 const { body, validationResult } = require("express-validator");
-const sequelize = require("sequelize");
 const db = require("../db/db");
 
 var express = require("express");
@@ -39,35 +38,40 @@ router.post(
 /* Update todos with done */
 router.put("/:id/done", authenticateToken, async (req, res, next) => {
   const pk = req.params.id;
-  var todo = await db.models.todo.findOne({
-    where: { id: pk, user_id: req.userId },
-  });
+  try {
+    var todo = await db.models.todo.findOne({
+      where: { id: pk, user_id: req.userId },
+    });
 
-  if (null == todo) {
-    res.status(404);
-    return;
+    if (!todo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    todo = await todo.update({ done_date: new Date() });
+    res.status(200).json(todo);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
-  todo = await todo.update({ done_date: new Date() });
-
-  res.status(200).json(todo);
 });
 
 /* Update todos with undone */
 router.delete("/:id/done", authenticateToken, async (req, res, next) => {
   const pk = req.params.id;
-  var todo = await db.models.todo.findOne({
-    where: { id: pk, user_id: req.userId },
-  });
+  try {
+    var todo = await db.models.todo.findOne({
+      where: { id: pk, user_id: req.userId },
+    });
 
-  if (null == todo) {
-    res.status(404);
-    return;
+    if (!todo) {
+      return res.status(404).json({ error: "Todo not found" });
+    }
+
+    const updatedTodo = await todo.update({ done_date: null });
+
+    res.status(200).json(updatedTodo);
+  } catch (error) {
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
-  todo = await todo.update({ done_date: null });
-
-  res.status(200).json(todo);
 });
 
 module.exports = router;

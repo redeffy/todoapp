@@ -10,9 +10,6 @@ const connUrl =
   process.env.DB_HOST +
   "/" +
   process.env.DB_NAME;
-console.log("connUrl");
-
-console.log(connUrl);
 
 const db = new Sequelize(connUrl);
 const models = [require("../models/user"), require("../models/todo")];
